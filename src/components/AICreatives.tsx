@@ -23,7 +23,7 @@ export function AICreatives() {
             Where marketing meets machine imagination
           </h2>
           <p className="mt-4 max-w-xl text-base text-ink-muted md:text-lg">
-            Dwell Baby Air launch — tap any frame to watch the full reel.
+            Dwell Baby Air launch — reels autoplay muted. Tap to expand.
           </p>
         </motion.div>
       </div>

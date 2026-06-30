@@ -1,12 +1,16 @@
+import { useRef } from "react";
+import { useInView } from "framer-motion";
 import type { MediaItem } from "../data/content";
 import { useLightbox } from "../context/LightboxContext";
 import {
+  driveEmbedUrl,
+  driveThumbnail,
+  instagramEmbedUrl,
   isInstagramReel,
-  isPlayableMedia,
   isPortraitMedia,
   mediaCaption,
-  mediaPosterUrl,
   toLightboxItem,
+  youtubeEmbedUrl,
 } from "../lib/mediaUtils";
 
 type MediaCollageProps = {
@@ -14,39 +18,9 @@ type MediaCollageProps = {
   className?: string;
 };
 
-function PlayOverlay() {
-  return (
-    <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/20">
-      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-sm">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="ml-0.5 text-ink">
-          <path d="M8 5v14l11-7z" />
-        </svg>
-      </span>
-    </span>
-  );
-}
-
-function InstagramPlaceholder({ reel }: { reel: boolean }) {
-  return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-zinc-700 to-zinc-500 p-3">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="opacity-90">
-        <rect x="2" y="2" width="20" height="20" rx="5" stroke="white" strokeWidth="1.5" />
-        <circle cx="12" cy="12" r="4" stroke="white" strokeWidth="1.5" />
-      </svg>
-      <span className="text-center text-[9px] tracking-wide text-white/80 uppercase">
-        {reel ? "Reel" : "Post"}
-      </span>
-    </div>
-  );
-}
-
-function CollageCell({ item }: { item: MediaItem }) {
-  const { open } = useLightbox();
-  const caption = mediaCaption(item);
+function cellLayout(item: MediaItem) {
   const portrait = isPortraitMedia(item);
   const square = item.kind === "instagram" && !isInstagramReel(item);
-  const playable = isPlayableMedia(item);
-  const poster = mediaPosterUrl(item);
 
   const sizeClass = portrait
     ? "w-[120px] md:w-[140px]"
@@ -60,44 +34,109 @@ function CollageCell({ item }: { item: MediaItem }) {
       ? "aspect-square"
       : "aspect-[4/3]";
 
+  return { sizeClass, aspectClass, portrait, square };
+}
+
+function embedSrc(item: MediaItem): string | null {
+  switch (item.kind) {
+    case "youtube":
+      return youtubeEmbedUrl(item.url);
+    case "instagram":
+      return instagramEmbedUrl(item.permalink);
+    case "drive":
+      return item.previewType === "video" ? driveEmbedUrl(item.url) : null;
+    default:
+      return null;
+  }
+}
+
+function AutoplayFrame({
+  item,
+  inView,
+}: {
+  item: MediaItem;
+  inView: boolean;
+}) {
+  const caption = mediaCaption(item);
+  const { portrait } = cellLayout(item);
+
+  if (item.kind === "image") {
+    return (
+      <img
+        src={item.src}
+        alt={item.alt}
+        className="absolute inset-0 h-full w-full object-cover"
+        loading="lazy"
+      />
+    );
+  }
+
+  if (item.kind === "drive" && item.previewType !== "video") {
+    return (
+      <img
+        src={driveThumbnail(item.url)}
+        alt={caption}
+        className="absolute inset-0 h-full w-full object-cover"
+        loading="lazy"
+      />
+    );
+  }
+
+  const src = embedSrc(item);
+  if (!inView || !src) {
+    return <div className="absolute inset-0 animate-pulse bg-zinc-200" />;
+  }
+
+  const cropInstagram =
+    item.kind === "instagram" && (portrait || item.permalink.includes("/p/"));
+
+  if (cropInstagram) {
+    return (
+      <iframe
+        src={src}
+        title={caption}
+        className="pointer-events-none absolute top-1/2 left-1/2 h-[230%] w-[230%] -translate-x-1/2 -translate-y-1/2 border-0"
+        allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
+    );
+  }
+
+  return (
+    <iframe
+      src={src}
+      title={caption}
+      className="pointer-events-none absolute inset-0 h-full w-full border-0"
+      allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+    />
+  );
+}
+
+function CollageCell({ item }: { item: MediaItem }) {
+  const { open } = useLightbox();
+  const ref = useRef<HTMLButtonElement>(null);
+  const inView = useInView(ref, { margin: "80px", amount: 0.1 });
+  const caption = mediaCaption(item);
+  const { sizeClass, aspectClass } = cellLayout(item);
+
   return (
     <button
+      ref={ref}
       type="button"
       onClick={() => open(toLightboxItem(item))}
-      className={`${sizeClass} ${aspectClass} relative block shrink-0 cursor-zoom-in overflow-hidden rounded-sm bg-zinc-200`}
+      className={`${sizeClass} ${aspectClass} relative block shrink-0 cursor-zoom-in overflow-hidden rounded-sm bg-zinc-900`}
       aria-label={caption}
     >
-      {poster ? (
-        <img
-          src={poster}
-          alt={caption}
-          className="h-full w-full object-cover"
-          loading="lazy"
-        />
-      ) : item.kind === "instagram" ? (
-        <InstagramPlaceholder reel={isInstagramReel(item)} />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center bg-zinc-300 p-2 text-center text-[10px] text-ink-muted">
-          {caption}
-        </div>
-      )}
-      {playable && <PlayOverlay />}
+      <AutoplayFrame item={item} inView={inView} />
     </button>
   );
 }
 
 export function MediaCollage({ items, className = "" }: MediaCollageProps) {
-  if (items.length === 0) {
-    return (
-      <div
-        className={`flex min-h-[280px] items-center justify-center rounded-lg bg-zinc-100 ${className}`}
-      >
-        <p className="text-[11px] tracking-[0.2em] text-ink-faint uppercase">
-          No media yet
-        </p>
-      </div>
-    );
-  }
+  if (items.length === 0) return null;
 
   return (
     <div
@@ -118,17 +157,28 @@ export function CollageStripTile({
   caption: string;
 }) {
   const { open } = useLightbox();
-  const reel = permalink.includes("/reel/");
+  const ref = useRef<HTMLButtonElement>(null);
+  const inView = useInView(ref, { margin: "60px" });
 
   return (
     <button
+      ref={ref}
       type="button"
       onClick={() => open({ type: "instagram", permalink, caption })}
-      className="relative aspect-[9/16] w-32 shrink-0 cursor-zoom-in overflow-hidden rounded-sm bg-zinc-200 md:w-36"
+      className="relative aspect-[9/16] w-32 shrink-0 cursor-zoom-in overflow-hidden rounded-sm bg-zinc-900 md:w-36"
       aria-label={caption}
     >
-      <InstagramPlaceholder reel={reel} />
-      <PlayOverlay />
+      {inView ? (
+        <iframe
+          src={instagramEmbedUrl(permalink)}
+          title={caption}
+          className="pointer-events-none absolute top-1/2 left-1/2 h-[230%] w-[230%] -translate-x-1/2 -translate-y-1/2 border-0"
+          allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+        />
+      ) : (
+        <div className="absolute inset-0 animate-pulse bg-zinc-200" />
+      )}
     </button>
   );
 }

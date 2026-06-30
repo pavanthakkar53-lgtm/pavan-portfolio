@@ -82,9 +82,11 @@ export function ScrollJourney() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="grid min-h-0 flex-1 gap-8 overflow-y-auto md:grid-cols-[1fr_1fr] md:items-start"
+              className={`grid min-h-0 flex-1 gap-8 overflow-y-auto md:items-start ${
+                item.media.length > 0 ? "md:grid-cols-[1fr_1fr]" : "md:grid-cols-1"
+              }`}
             >
-              <div className="min-w-0">
+              <div className={`min-w-0 ${item.media.length === 0 ? "max-w-3xl" : ""}`}>
                 <p className="text-xs tracking-[0.2em] text-ink-muted uppercase">
                   {item.period}
                 </p>
@@ -118,7 +120,9 @@ export function ScrollJourney() {
                 )}
               </div>
 
-              <MediaCollage items={item.media} className="w-full" />
+              {item.media.length > 0 && (
+                <MediaCollage items={item.media} className="w-full" />
+              )}
             </motion.div>
           </AnimatePresence>
 
