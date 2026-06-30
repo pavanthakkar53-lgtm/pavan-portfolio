@@ -149,36 +149,3 @@ export function MediaCollage({ items, className = "" }: MediaCollageProps) {
   );
 }
 
-export function CollageStripTile({
-  permalink,
-  caption,
-}: {
-  permalink: string;
-  caption: string;
-}) {
-  const { open } = useLightbox();
-  const ref = useRef<HTMLButtonElement>(null);
-  const inView = useInView(ref, { margin: "60px" });
-
-  return (
-    <button
-      ref={ref}
-      type="button"
-      onClick={() => open({ type: "instagram", permalink, caption })}
-      className="relative aspect-[9/16] w-32 shrink-0 cursor-zoom-in overflow-hidden rounded-sm bg-zinc-900 md:w-36"
-      aria-label={caption}
-    >
-      {inView ? (
-        <iframe
-          src={instagramEmbedUrl(permalink)}
-          title={caption}
-          className="pointer-events-none absolute top-1/2 left-1/2 h-[230%] w-[230%] -translate-x-1/2 -translate-y-1/2 border-0"
-          allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-          loading="lazy"
-        />
-      ) : (
-        <div className="absolute inset-0 animate-pulse bg-zinc-200" />
-      )}
-    </button>
-  );
-}
