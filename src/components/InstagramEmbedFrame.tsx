@@ -8,6 +8,8 @@ type InstagramEmbedFrameProps = {
   /** tile = cropped autoplay preview; lightbox = full playable embed */
   variant?: "tile" | "lightbox";
   className?: string;
+  /** false = load immediately (for marquee tiles) */
+  lazy?: boolean;
 };
 
 export function InstagramEmbedFrame({
@@ -15,11 +17,13 @@ export function InstagramEmbedFrame({
   title,
   variant = "tile",
   className = "",
+  lazy = true,
 }: InstagramEmbedFrameProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { margin: "80px", amount: 0.1 });
+  const inView = useInView(ref, { once: true, margin: "120px", amount: 0.05 });
   const isReel = permalink.includes("/reel/");
   const src = instagramEmbedUrl(permalink);
+  const shouldLoad = !lazy || inView || variant === "lightbox";
 
   const cropClass =
     variant === "lightbox"
@@ -29,8 +33,11 @@ export function InstagramEmbedFrame({
         : "pointer-events-none absolute top-1/2 left-1/2 h-[240%] w-[240%] -translate-x-1/2 -translate-y-[42%] border-0";
 
   return (
-    <div ref={ref} className={`relative overflow-hidden bg-zinc-900 ${className}`}>
-      {inView || variant === "lightbox" ? (
+    <div
+      ref={ref}
+      className={`relative h-full w-full min-h-[80px] overflow-hidden bg-zinc-200 ${className}`}
+    >
+      {shouldLoad ? (
         <iframe
           src={src}
           title={title}
@@ -39,9 +46,7 @@ export function InstagramEmbedFrame({
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
         />
-      ) : (
-        <div className="absolute inset-0 bg-zinc-200" />
-      )}
+      ) : null}
     </div>
   );
 }

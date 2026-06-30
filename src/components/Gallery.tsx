@@ -19,7 +19,7 @@ function GalleryMediaFrame({ media, title, inView }: { media: MediaItem; title: 
       <img
         src={media.src}
         alt={title}
-        className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+        className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
         loading="lazy"
       />
     );
@@ -31,7 +31,7 @@ function GalleryMediaFrame({ media, title, inView }: { media: MediaItem; title: 
         permalink={media.permalink}
         title={title}
         variant="tile"
-        className="absolute inset-0"
+        className="h-full w-full"
       />
     );
   }
@@ -41,7 +41,7 @@ function GalleryMediaFrame({ media, title, inView }: { media: MediaItem; title: 
       <img
         src={driveThumbnail(media.url)}
         alt={title}
-        className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+        className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
         loading="lazy"
       />
     );
@@ -90,7 +90,7 @@ function GalleryPreviewTile({
         type="button"
         whileHover={{ y: -3 }}
         onClick={() => open(toLightboxItem(media))}
-        className={`group relative block w-full cursor-zoom-in overflow-hidden rounded-sm bg-zinc-900 ${
+        className={`group relative block w-full cursor-zoom-in overflow-hidden rounded-sm bg-zinc-200 ${
           isReel
             ? "aspect-[9/16]"
             : isYoutube
@@ -100,7 +100,9 @@ function GalleryPreviewTile({
                 : "aspect-[4/3]"
         }`}
       >
-        <GalleryMediaFrame media={media} title={title} inView={inView || isVideo || media.kind === "instagram"} />
+        <div className="absolute inset-0">
+          <GalleryMediaFrame media={media} title={title} inView={inView || isVideo || media.kind === "instagram"} />
+        </div>
       </motion.button>
       <div className="px-1 py-2">
         <p className="text-xs tracking-[0.15em] text-ink-faint uppercase md:text-sm">{category}</p>

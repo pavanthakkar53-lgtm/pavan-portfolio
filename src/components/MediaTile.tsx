@@ -23,7 +23,7 @@ function TilePreview({ item }: { item: MediaItem }) {
         permalink={item.permalink}
         title={caption}
         variant="tile"
-        className="absolute inset-0"
+        className="h-full w-full"
       />
     );
   }

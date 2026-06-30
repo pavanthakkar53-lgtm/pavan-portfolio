@@ -43,7 +43,7 @@ function PreviewFrame({ item }: { item: MediaItem }) {
         permalink={item.permalink}
         title={caption}
         variant="tile"
-        className="absolute inset-0"
+        className="h-full w-full"
       />
     );
   }
@@ -96,7 +96,9 @@ function CollageCell({ item }: { item: MediaItem }) {
       className={`${sizeClass} ${aspectClass} relative block shrink-0 cursor-zoom-in overflow-hidden rounded-sm bg-zinc-200`}
       aria-label={caption}
     >
-      <PreviewFrame item={item} />
+      <div className="absolute inset-0">
+        <PreviewFrame item={item} />
+      </div>
     </button>
   );
 }

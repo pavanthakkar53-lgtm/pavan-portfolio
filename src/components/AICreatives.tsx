@@ -17,17 +17,20 @@ function AIReelTile({
     <button
       type="button"
       onClick={() => open({ type: "instagram", permalink, caption })}
-      className={`relative shrink-0 cursor-zoom-in overflow-hidden rounded-sm ${
+      className={`relative block shrink-0 cursor-zoom-in overflow-hidden rounded-sm bg-zinc-200 ${
         isReel ? "aspect-[9/16] w-[100px] sm:w-[116px] md:w-[128px]" : "aspect-square w-[100px] sm:w-[116px] md:w-[128px]"
       }`}
       aria-label={caption}
     >
-      <InstagramEmbedFrame
-        permalink={permalink}
-        title={caption}
-        variant="tile"
-        className="absolute inset-0"
-      />
+      <div className="absolute inset-0">
+        <InstagramEmbedFrame
+          permalink={permalink}
+          title={caption}
+          variant="tile"
+          lazy={false}
+          className="h-full w-full"
+        />
+      </div>
     </button>
   );
 }
