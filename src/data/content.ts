@@ -348,42 +348,16 @@ export const beyondWork = [
 ];
 
 // ─── AI CREATIVES ───────────────────────────────────────────────
-// Native MP4 tiles (Dwell Baby Air Shopify CDN) — autoplay muted in strip.
-export const aiCreatives: {
-  videoSrc: string;
-  caption: string;
-  permalink?: string;
-}[] = [
-  {
-    videoSrc:
-      "https://cdn.shopify.com/videos/c/o/v/ff98f8f921794c84b0e2219c47ec2e41.mp4",
-    caption: "AI-generated — Baby Air launch",
-    permalink: "https://www.instagram.com/reel/DXrD_YqiRK1/",
-  },
-  {
-    videoSrc:
-      "https://cdn.shopify.com/videos/c/o/v/a0e1ac85410e430aa5ee7ad0d100f1d2.mp4",
-    caption: "AI-generated — Baby Air launch",
-    permalink: "https://www.instagram.com/reel/DXoTgEhCVzn/",
-  },
-  {
-    videoSrc:
-      "https://cdn.shopify.com/videos/c/o/v/0fc75c57abcd4c998ce777707739c23b.mp4",
-    caption: "AI-generated — Baby Air launch",
-    permalink: "https://www.instagram.com/reel/DXg9ClwCeLX/",
-  },
-  {
-    videoSrc:
-      "https://cdn.shopify.com/videos/c/o/v/10732eae7ca8463d88d06a578d8a9728.mp4",
-    caption: "AI-generated — Baby Air launch",
-    permalink: "https://www.instagram.com/reel/DXg5_pkiXKJ/",
-  },
-  {
-    videoSrc:
-      "https://cdn.shopify.com/videos/c/o/v/d5aaaf371f9b47e9b3cc814d6ae094c7.mp4",
-    caption: "AI-generated — Baby Air launch",
-    permalink: "https://www.instagram.com/reel/DSz4gFukmql/",
-  },
+// Pavan's Dwell Baby Air AI reels (@dwell_air).
+export const aiCreatives: { permalink: string; caption: string }[] = [
+  { permalink: "https://www.instagram.com/reel/DXrD_YqiRK1/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/reel/DXoTgEhCVzn/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/reel/DXg9ClwCeLX/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/reel/DXg5_pkiXKJ/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/reel/DSz4gFukmql/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/reel/DVLmPLeCRcC/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/reel/DWXs9uChwJt/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/p/DZRn0Yhpl-v/", caption: "AI content strip" },
 ];
 
 export const contact = {

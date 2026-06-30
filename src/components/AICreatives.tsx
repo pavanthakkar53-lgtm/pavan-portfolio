@@ -1,50 +1,45 @@
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { aiCreatives } from "../data/content";
 import { useLightbox } from "../context/LightboxContext";
+import { instagramEmbedUrl } from "../lib/mediaUtils";
 
-function AIVideoTile({
-  videoSrc,
-  caption,
+function AIReelTile({
   permalink,
+  caption,
 }: {
-  videoSrc: string;
+  permalink: string;
   caption: string;
-  permalink?: string;
 }) {
   const { open } = useLightbox();
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.muted = true;
-    video.play().catch(() => {});
-  }, [videoSrc]);
+  const ref = useRef<HTMLButtonElement>(null);
+  const inView = useInView(ref, { margin: "80px" });
+  const isReel = permalink.includes("/reel/");
 
   return (
     <button
+      ref={ref}
       type="button"
-      onClick={() =>
-        permalink
-          ? open({ type: "instagram", permalink, caption })
-          : undefined
-      }
-      className="group shrink-0 cursor-zoom-in overflow-hidden rounded-2xl bg-zinc-900 shadow-[0_4px_24px_rgba(0,0,0,0.08)] transition-shadow hover:shadow-[0_8px_32px_rgba(0,0,0,0.12)] w-[240px] h-[420px] sm:w-[300px] sm:h-[526px] lg:w-[360px] lg:h-[700px]"
+      onClick={() => open({ type: "instagram", permalink, caption })}
+      className="relative shrink-0 cursor-zoom-in overflow-hidden rounded-2xl bg-zinc-900 shadow-[0_4px_20px_rgba(0,0,0,0.07)] transition-shadow hover:shadow-[0_6px_28px_rgba(0,0,0,0.1)] w-[192px] h-[336px] sm:w-[240px] sm:h-[421px] lg:w-[288px] lg:h-[560px]"
       style={{ aspectRatio: "0.57 / 1" }}
       aria-label={caption}
     >
-      <video
-        ref={videoRef}
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        className="h-full w-full object-cover object-center"
-      >
-        <source src={videoSrc} type="video/mp4" />
-      </video>
+      {inView ? (
+        <iframe
+          src={instagramEmbedUrl(permalink)}
+          title={caption}
+          className={`pointer-events-none absolute top-1/2 left-1/2 border-0 ${
+            isReel
+              ? "h-[230%] w-[230%] -translate-x-1/2 -translate-y-1/2"
+              : "h-[200%] w-[200%] -translate-x-1/2 -translate-y-1/2"
+          }`}
+          allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+        />
+      ) : (
+        <div className="absolute inset-0 animate-pulse bg-zinc-200" />
+      )}
     </button>
   );
 }
@@ -53,7 +48,7 @@ export function AICreatives() {
   const loop = [...aiCreatives, ...aiCreatives];
 
   return (
-    <section id="ai-creatives" className="relative overflow-hidden py-28 md:py-40">
+    <section id="ai-creatives" className="relative overflow-hidden py-28 md:py-36">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(17,17,19,0.05),transparent_70%)]" />
 
       <div className="mx-auto max-w-6xl px-5 md:px-8">
@@ -70,14 +65,14 @@ export function AICreatives() {
             Where marketing meets machine imagination
           </h2>
           <p className="mt-4 max-w-xl text-base text-ink-muted md:text-lg">
-            Dwell Baby Air launch — AI-generated creatives, looping silently.
+            Dwell Baby Air launch — our AI reels, autoplay muted. Tap to expand.
           </p>
         </motion.div>
       </div>
 
-      <div className="relative mt-16 md:mt-20">
+      <div className="relative mt-14 md:mt-16">
         <motion.div
-          className="flex w-max items-center gap-6 px-6 sm:gap-8 sm:px-10 lg:gap-10 lg:px-12"
+          className="flex w-max items-center gap-5 px-6 sm:gap-6 sm:px-8 lg:gap-8 lg:px-10"
           animate={{ x: ["0%", "-50%"] }}
           transition={{
             x: {
@@ -89,11 +84,10 @@ export function AICreatives() {
           }}
         >
           {loop.map((item, i) => (
-            <AIVideoTile
-              key={`${item.videoSrc}-${i}`}
-              videoSrc={item.videoSrc}
-              caption={item.caption}
+            <AIReelTile
+              key={`${item.permalink}-${i}`}
               permalink={item.permalink}
+              caption={item.caption}
             />
           ))}
         </motion.div>
