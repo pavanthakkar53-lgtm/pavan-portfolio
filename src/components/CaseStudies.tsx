@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import { caseStudies } from "../data/content";
-import { MediaTile } from "./MediaTile";
+import { MediaCollage } from "./MediaCollage";
 
 export function CaseStudies() {
   const [active, setActive] = useState(0);
@@ -90,11 +90,7 @@ export function CaseStudies() {
               </div>
 
               {hasMedia ? (
-                <div className="flex max-h-[520px] flex-wrap content-start justify-center gap-4 overflow-y-auto pr-1 md:justify-end">
-                  {study.media.map((m, i) => (
-                    <MediaTile key={i} item={m} className="shrink-0" />
-                  ))}
-                </div>
+                <MediaCollage items={study.media} className="w-full" />
               ) : (
                 <div className="flex aspect-[4/3] items-center justify-center rounded-sm bg-[linear-gradient(160deg,#ececee,#f0f0f2)]">
                   <span className="text-[11px] tracking-[0.2em] text-ink-faint uppercase">

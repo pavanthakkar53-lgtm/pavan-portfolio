@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { contact } from "../data/content";
-import { OpenableImage } from "./OpenableImage";
+import { useLightbox } from "../context/LightboxContext";
 
 export function Contact() {
+  const { open } = useLightbox();
+
   return (
     <section id="contact" className="relative bg-ink py-32 text-white md:py-48">
       <div className="mx-auto max-w-6xl px-5 md:px-8">
@@ -45,12 +47,25 @@ export function Contact() {
             </div>
           </motion.div>
 
-          <OpenableImage
-            src="/pavan-headshot.png"
-            alt="Pavan Thakkar"
-            caption="Pavan Thakkar"
-            className="aspect-[3/4] max-w-sm rounded-sm"
-          />
+          <button
+            type="button"
+            onClick={() =>
+              open({
+                type: "image",
+                src: "/pavan-portrait-bw.png",
+                alt: "Pavan Thakkar",
+                caption: "Pavan Thakkar",
+              })
+            }
+            className="mx-auto max-w-xs cursor-zoom-in overflow-hidden rounded-sm md:mx-0 md:ml-auto"
+            aria-label="Open photo of Pavan Thakkar"
+          >
+            <img
+              src="/pavan-portrait-bw.png"
+              alt="Pavan Thakkar"
+              className="aspect-[4/5] w-full object-cover object-top grayscale"
+            />
+          </button>
         </div>
       </div>
     </section>

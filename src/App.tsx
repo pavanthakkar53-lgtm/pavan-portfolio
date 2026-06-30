@@ -11,7 +11,6 @@ import { PreloadSplash } from "./components/PreloadSplash";
 import { ScrollJourney } from "./components/ScrollJourney";
 import { Skills } from "./components/Skills";
 import { StatsWall } from "./components/StatsWall";
-import { Testimonials } from "./components/Testimonials";
 import { LightboxProvider } from "./context/LightboxContext";
 
 function App() {
@@ -29,7 +28,6 @@ function App() {
             <StatsWall />
             <Skills />
             <Gallery />
-            <Testimonials />
             <Education />
             <BeyondWork />
             <Contact />

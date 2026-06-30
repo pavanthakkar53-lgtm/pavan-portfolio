@@ -119,7 +119,7 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.96, opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="relative aspect-[9/16] w-full max-w-[min(90vw,420px)]"
+                className="relative aspect-video w-full max-w-[min(92vw,960px)]"
                 onClick={(e) => e.stopPropagation()}
               >
                 <iframe

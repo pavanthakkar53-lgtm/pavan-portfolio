@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { aiCreatives } from "../data/content";
-import { MediaTile } from "./MediaTile";
+import { CollageStripTile } from "./MediaCollage";
 
 export function AICreatives() {
   const loop = [...aiCreatives, ...aiCreatives];
@@ -23,32 +23,25 @@ export function AICreatives() {
             Where marketing meets machine imagination
           </h2>
           <p className="mt-4 max-w-xl text-base text-ink-muted md:text-lg">
-            Dwell Baby Air launch — reels playing inline as you scroll.
+            Dwell Baby Air launch — tap any frame to watch the full reel.
           </p>
         </motion.div>
       </div>
 
       <div className="relative mt-14">
         <motion.div
-          className="flex w-max items-start gap-5 px-5 md:gap-6 md:px-8"
+          className="flex w-max items-start gap-3 px-5 md:gap-4 md:px-8"
           animate={{ x: ["0%", "-50%"] }}
           transition={{
             x: { repeat: Infinity, repeatType: "loop", duration: 50, ease: "linear" },
           }}
         >
           {loop.map((item, i) => (
-            <div
+            <CollageStripTile
               key={`${item.permalink}-${i}`}
-              className="w-[220px] shrink-0 md:w-[260px]"
-            >
-              <MediaTile
-                item={{
-                  kind: "instagram",
-                  permalink: item.permalink,
-                  caption: item.caption,
-                }}
-              />
-            </div>
+              permalink={item.permalink}
+              caption={item.caption}
+            />
           ))}
         </motion.div>
       </div>

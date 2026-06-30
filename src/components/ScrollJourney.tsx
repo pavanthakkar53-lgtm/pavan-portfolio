@@ -6,7 +6,7 @@ import {
   useScroll,
 } from "framer-motion";
 import { timeline } from "../data/content";
-import { MediaTile } from "./MediaTile";
+import { MediaCollage } from "./MediaCollage";
 
 const NAV_OFFSET = "5.5rem";
 
@@ -28,7 +28,6 @@ export function ScrollJourney() {
   });
 
   const item = timeline[active];
-  const hasMedia = item.media.length > 0;
 
   return (
     <section
@@ -119,19 +118,7 @@ export function ScrollJourney() {
                 )}
               </div>
 
-              {hasMedia ? (
-                <div className="flex max-h-[68vh] flex-wrap content-start justify-center gap-4 overflow-y-auto pr-1 md:max-h-[72vh] md:justify-end">
-                  {item.media.map((m, i) => (
-                    <MediaTile key={i} item={m} className="shrink-0" />
-                  ))}
-                </div>
-              ) : (
-                <div className="flex aspect-[4/3] min-h-[180px] items-center justify-center rounded-sm bg-[linear-gradient(160deg,#ececee,#f3f3f4)] md:aspect-[3/4] md:max-h-[340px]">
-                  <p className="px-6 text-center text-[11px] tracking-[0.2em] text-ink-faint uppercase">
-                    No media yet
-                  </p>
-                </div>
-              )}
+              <MediaCollage items={item.media} className="w-full" />
             </motion.div>
           </AnimatePresence>
 

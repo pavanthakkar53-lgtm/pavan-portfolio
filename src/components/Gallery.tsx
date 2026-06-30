@@ -1,120 +1,147 @@
-import { useMemo, useRef, useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useScroll,
-} from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { galleryItems } from "../data/content";
-import { MediaTile } from "./MediaTile";
+import type { MediaItem } from "../data/content";
+import { useLightbox } from "../context/LightboxContext";
+import {
+  driveThumbnail,
+  toLightboxItem,
+  youtubeThumbnail,
+} from "../lib/mediaUtils";
 
-export function Gallery() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
+const categories = ["All", ...Array.from(new Set(galleryItems.map((g) => g.category)))];
 
-  const categories = useMemo(
-    () => Array.from(new Set(galleryItems.map((g) => g.category))),
-    [],
-  );
+function previewFor(item: MediaItem): string | null {
+  switch (item.kind) {
+    case "image":
+      return item.src;
+    case "youtube":
+      return youtubeThumbnail(item.url);
+    case "drive":
+      return driveThumbnail(item.url);
+    case "instagram":
+      return null;
+    default:
+      return null;
+  }
+}
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const index = Math.min(
-      categories.length - 1,
-      Math.max(0, Math.floor(v * categories.length)),
-    );
-    setActive(index);
-  });
-
-  const activeCategory = categories[active];
-  const filtered = galleryItems.filter((item) => item.category === activeCategory);
+function GalleryPreviewTile({
+  media,
+  title,
+  category,
+}: {
+  media: MediaItem;
+  title: string;
+  category: string;
+}) {
+  const { open } = useLightbox();
+  const thumb = previewFor(media);
+  const isReel =
+    media.kind === "instagram" && media.permalink.includes("/reel/");
+  const isYoutube = media.kind === "youtube";
 
   return (
-    <section
-      id="gallery"
-      ref={containerRef}
-      className="relative z-20"
-      style={{ height: `${categories.length * 100}vh` }}
+    <motion.button
+      type="button"
+      whileHover={{ y: -3 }}
+      onClick={() => open(toLightboxItem(media))}
+      className={`group relative w-full cursor-zoom-in overflow-hidden rounded-sm bg-zinc-100 text-left ${
+        isReel
+          ? "aspect-[9/16]"
+          : isYoutube
+            ? "aspect-video"
+            : media.kind === "instagram"
+              ? "aspect-square"
+              : "aspect-[4/3]"
+      }`}
     >
-      <div
-        className="sticky z-20 flex min-h-[calc(100vh-5.5rem)] flex-col bg-canvas"
-        style={{ top: "5.5rem" }}
-      >
-        <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-5 py-8 md:px-8 md:py-10">
-          <div className="mb-6 flex shrink-0 items-end justify-between gap-6">
-            <div>
-              <p className="text-[11px] tracking-[0.25em] text-ink-faint uppercase">
-                Scroll through categories
-              </p>
-              <h2 className="mt-2 text-3xl font-medium tracking-tight text-ink md:text-5xl">
-                Receipts from the field
-              </h2>
-            </div>
-            <div className="shrink-0 text-right">
-              <p className="text-4xl font-medium text-ink/30 md:text-5xl">
-                {String(active + 1).padStart(2, "0")}
-              </p>
-              <p className="text-xs tracking-widest text-ink-muted uppercase">
-                of {String(categories.length).padStart(2, "0")}
-              </p>
-            </div>
-          </div>
+      {thumb ? (
+        <>
+          <img
+            src={thumb}
+            alt={title}
+            className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+            loading="lazy"
+          />
+          {(isReel || isYoutube || (media.kind === "drive" && media.previewType === "video")) && (
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/15">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 shadow-sm">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="ml-0.5 text-ink">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+            </span>
+          )}
+        </>
+      ) : (
+        <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-zinc-700 to-zinc-500 p-4">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="opacity-90">
+            <rect x="2" y="2" width="20" height="20" rx="5" stroke="white" strokeWidth="1.5" />
+            <circle cx="12" cy="12" r="4" stroke="white" strokeWidth="1.5" />
+          </svg>
+          <span className="text-center text-[10px] tracking-wide text-white/80 uppercase">
+            Reel
+          </span>
+        </div>
+      )}
+      <div className="px-1 py-2">
+        <p className="text-xs tracking-[0.15em] text-ink-faint uppercase md:text-sm">{category}</p>
+        <p className="text-base text-ink md:text-lg">{title}</p>
+      </div>
+    </motion.button>
+  );
+}
 
-          <div className="mb-6 flex gap-1">
-            {categories.map((cat, i) => (
-              <div
-                key={cat}
-                className="h-[2px] flex-1 overflow-hidden rounded-full bg-ink/10"
-              >
-                <motion.div
-                  className="h-full bg-ink"
-                  animate={{ width: i <= active ? "100%" : "0%" }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                />
-              </div>
-            ))}
-          </div>
+export function Gallery() {
+  const [filter, setFilter] = useState("All");
+  const filtered =
+    filter === "All"
+      ? galleryItems
+      : galleryItems.filter((item) => item.category === filter);
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+  return (
+    <section id="gallery" className="relative py-32 md:py-40">
+      <div className="mx-auto max-w-6xl px-5 md:px-8">
+        <p className="text-sm tracking-[0.25em] text-ink-faint uppercase md:text-base">
+          Gallery
+        </p>
+        <h2 className="mt-3 text-4xl font-medium tracking-tight text-ink md:text-6xl">
+          Receipts from the field
+        </h2>
+
+        <div className="mt-10 flex flex-wrap gap-4">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setFilter(cat)}
+              className={`text-sm tracking-wide uppercase transition md:text-base ${
+                filter === cat ? "text-ink" : "text-ink-faint hover:text-ink-muted"
+              }`}
             >
-              <p className="text-xs tracking-[0.2em] text-accent uppercase">
-                {activeCategory}
-              </p>
+              {cat}
+            </button>
+          ))}
+        </div>
 
-              <div className="mt-6 flex max-h-[62vh] flex-wrap content-start justify-center gap-4 overflow-y-auto pr-1 md:justify-start">
-                {filtered.map((item, i) => (
-                  <motion.div
-                    key={item.title + i}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.06 }}
-                    className="w-[220px] shrink-0 md:w-[260px]"
-                  >
-                    <MediaTile item={item.media} />
-                    <p className="mt-2 text-center text-sm text-ink">{item.title}</p>
-                  </motion.div>
-                ))}
-              </div>
+        <div className="mt-10 columns-1 gap-4 sm:columns-2 lg:columns-3">
+          {filtered.map((item, i) => (
+            <motion.div
+              key={item.title + i}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.03 }}
+              className="mb-4 break-inside-avoid"
+            >
+              <GalleryPreviewTile
+                media={item.media}
+                title={item.title}
+                category={item.category}
+              />
             </motion.div>
-          </AnimatePresence>
-
-          <p
-            className={`mt-8 shrink-0 text-center text-xs tracking-[0.2em] uppercase ${
-              active === categories.length - 1 ? "text-ink-faint/40" : "text-ink-faint"
-            }`}
-          >
-            Keep scrolling ↓
-          </p>
+          ))}
         </div>
       </div>
     </section>
