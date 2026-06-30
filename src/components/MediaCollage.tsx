@@ -1,6 +1,6 @@
 import type { MediaItem } from "../data/content";
 import { useLightbox } from "../context/LightboxContext";
-import { useInstagramThumbnail } from "../hooks/useInstagramThumbnail";
+import { InstagramEmbedFrame } from "./InstagramEmbedFrame";
 import {
   driveThumbnail,
   isInstagramReel,
@@ -36,9 +36,17 @@ function cellLayout(item: MediaItem) {
 
 function PreviewFrame({ item }: { item: MediaItem }) {
   const caption = mediaCaption(item);
-  const instagramThumb = useInstagramThumbnail(
-    item.kind === "instagram" ? item.permalink : "",
-  );
+
+  if (item.kind === "instagram") {
+    return (
+      <InstagramEmbedFrame
+        permalink={item.permalink}
+        title={caption}
+        variant="tile"
+        className="absolute inset-0"
+      />
+    );
+  }
 
   if (item.kind === "image") {
     return (
@@ -66,20 +74,6 @@ function PreviewFrame({ item }: { item: MediaItem }) {
     return (
       <img
         src={driveThumbnail(item.url)}
-        alt={caption}
-        className="absolute inset-0 h-full w-full object-cover"
-        loading="lazy"
-      />
-    );
-  }
-
-  if (item.kind === "instagram") {
-    if (!instagramThumb) {
-      return <div className="absolute inset-0 animate-pulse bg-zinc-200" />;
-    }
-    return (
-      <img
-        src={instagramThumb}
         alt={caption}
         className="absolute inset-0 h-full w-full object-cover"
         loading="lazy"

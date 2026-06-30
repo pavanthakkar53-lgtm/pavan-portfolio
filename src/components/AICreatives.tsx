@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { aiCreatives } from "../data/content";
 import { useLightbox } from "../context/LightboxContext";
-import { useInstagramThumbnail } from "../hooks/useInstagramThumbnail";
+import { InstagramEmbedFrame } from "./InstagramEmbedFrame";
 
 function AIReelTile({
   permalink,
@@ -11,28 +11,23 @@ function AIReelTile({
   caption: string;
 }) {
   const { open } = useLightbox();
-  const thumb = useInstagramThumbnail(permalink);
   const isReel = permalink.includes("/reel/");
 
   return (
     <button
       type="button"
       onClick={() => open({ type: "instagram", permalink, caption })}
-      className={`relative shrink-0 cursor-zoom-in overflow-hidden rounded-sm bg-zinc-200 ${
+      className={`relative shrink-0 cursor-zoom-in overflow-hidden rounded-sm ${
         isReel ? "aspect-[9/16] w-[100px] sm:w-[116px] md:w-[128px]" : "aspect-square w-[100px] sm:w-[116px] md:w-[128px]"
       }`}
       aria-label={caption}
     >
-      {thumb ? (
-        <img
-          src={thumb}
-          alt={caption}
-          className="h-full w-full object-cover"
-          loading="lazy"
-        />
-      ) : (
-        <div className="h-full w-full animate-pulse bg-zinc-200" />
-      )}
+      <InstagramEmbedFrame
+        permalink={permalink}
+        title={caption}
+        variant="tile"
+        className="absolute inset-0"
+      />
     </button>
   );
 }
@@ -56,7 +51,7 @@ export function AICreatives() {
             Where marketing meets machine imagination
           </h2>
           <p className="mt-4 max-w-xl text-base text-ink-muted md:text-lg">
-            Dwell Baby Air launch — tap any frame to watch full reel.
+            Dwell Baby Air launch — reels autoplay muted. Tap to expand.
           </p>
         </motion.div>
 

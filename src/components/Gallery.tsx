@@ -1,22 +1,19 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
 import { galleryItems } from "../data/content";
 import type { MediaItem } from "../data/content";
 import { useLightbox } from "../context/LightboxContext";
-import { useInstagramThumbnail } from "../hooks/useInstagramThumbnail";
+import { InstagramEmbedFrame } from "./InstagramEmbedFrame";
 import {
+  driveEmbedUrl,
   driveThumbnail,
   toLightboxItem,
-  youtubeThumbnail,
+  youtubeEmbedUrl,
 } from "../lib/mediaUtils";
 
 const categories = ["All", ...Array.from(new Set(galleryItems.map((g) => g.category)))];
 
-function GalleryMediaFrame({ media, title }: { media: MediaItem; title: string }) {
-  const instagramThumb = useInstagramThumbnail(
-    media.kind === "instagram" ? media.permalink : "",
-  );
-
+function GalleryMediaFrame({ media, title, inView }: { media: MediaItem; title: string; inView: boolean }) {
   if (media.kind === "image") {
     return (
       <img
@@ -28,18 +25,18 @@ function GalleryMediaFrame({ media, title }: { media: MediaItem; title: string }
     );
   }
 
-  if (media.kind === "youtube") {
+  if (media.kind === "instagram") {
     return (
-      <img
-        src={youtubeThumbnail(media.url)}
-        alt={title}
-        className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
-        loading="lazy"
+      <InstagramEmbedFrame
+        permalink={media.permalink}
+        title={title}
+        variant="tile"
+        className="absolute inset-0"
       />
     );
   }
 
-  if (media.kind === "drive") {
+  if (media.kind === "drive" && media.previewType !== "video") {
     return (
       <img
         src={driveThumbnail(media.url)}
@@ -50,21 +47,23 @@ function GalleryMediaFrame({ media, title }: { media: MediaItem; title: string }
     );
   }
 
-  if (media.kind === "instagram") {
-    if (!instagramThumb) {
-      return <div className="h-full w-full animate-pulse bg-zinc-200" />;
-    }
-    return (
-      <img
-        src={instagramThumb}
-        alt={title}
-        className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
-        loading="lazy"
-      />
-    );
+  let src = "";
+  if (media.kind === "youtube") src = youtubeEmbedUrl(media.url);
+  if (media.kind === "drive" && media.previewType === "video") src = driveEmbedUrl(media.url);
+
+  if (!inView || !src) {
+    return <div className="h-full w-full animate-pulse bg-zinc-200" />;
   }
 
-  return null;
+  return (
+    <iframe
+      src={src}
+      title={title}
+      className="pointer-events-none absolute inset-0 h-full w-full border-0"
+      allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+      loading="lazy"
+    />
+  );
 }
 
 function GalleryPreviewTile({
@@ -77,16 +76,21 @@ function GalleryPreviewTile({
   category: string;
 }) {
   const { open } = useLightbox();
+  const ref = useRef<HTMLButtonElement>(null);
+  const inView = useInView(ref, { margin: "100px", amount: 0.1 });
   const isReel = media.kind === "instagram" && media.permalink.includes("/reel/");
   const isYoutube = media.kind === "youtube";
+  const isVideo =
+    isYoutube || (media.kind === "drive" && media.previewType === "video");
 
   return (
     <div className="text-left">
       <motion.button
+        ref={ref}
         type="button"
         whileHover={{ y: -3 }}
         onClick={() => open(toLightboxItem(media))}
-        className={`group relative block w-full cursor-zoom-in overflow-hidden rounded-sm bg-zinc-200 ${
+        className={`group relative block w-full cursor-zoom-in overflow-hidden rounded-sm bg-zinc-900 ${
           isReel
             ? "aspect-[9/16]"
             : isYoutube
@@ -96,7 +100,7 @@ function GalleryPreviewTile({
                 : "aspect-[4/3]"
         }`}
       >
-        <GalleryMediaFrame media={media} title={title} />
+        <GalleryMediaFrame media={media} title={title} inView={inView || isVideo || media.kind === "instagram"} />
       </motion.button>
       <div className="px-1 py-2">
         <p className="text-xs tracking-[0.15em] text-ink-faint uppercase md:text-sm">{category}</p>

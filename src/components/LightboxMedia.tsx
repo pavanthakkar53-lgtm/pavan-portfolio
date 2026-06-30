@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import { useInstagramThumbnail } from "../hooks/useInstagramThumbnail";
-import { driveThumbnail, youtubeThumbnail } from "../lib/mediaUtils";
+import { InstagramEmbedFrame } from "./InstagramEmbedFrame";
+import { driveEmbedUrl, youtubeEmbedUrl } from "../lib/mediaUtils";
 
 const panelMotion = {
   initial: { scale: 0.94, opacity: 0 },
@@ -9,26 +9,6 @@ const panelMotion = {
   transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as const },
 };
 
-function ExternalLink({
-  href,
-  label,
-}: {
-  href: string;
-  label: string;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      className="mt-5 inline-block text-sm text-white/80 underline underline-offset-4 hover:text-white"
-      onClick={(e) => e.stopPropagation()}
-    >
-      {label} ↗
-    </a>
-  );
-}
-
 export function InstagramLightbox({
   permalink,
   caption,
@@ -36,30 +16,23 @@ export function InstagramLightbox({
   permalink: string;
   caption?: string;
 }) {
-  const thumb = useInstagramThumbnail(permalink);
   const isReel = permalink.includes("/reel/");
 
   return (
     <motion.div
       {...panelMotion}
-      className={`relative w-full ${isReel ? "max-w-[min(90vw,360px)]" : "max-w-[min(90vw,480px)]"}`}
+      className={`relative w-full ${isReel ? "aspect-[9/16] max-w-[min(90vw,400px)]" : "aspect-square max-w-[min(90vw,480px)]"}`}
       onClick={(e) => e.stopPropagation()}
     >
-      {thumb ? (
-        <img
-          src={thumb}
-          alt={caption ?? "Instagram"}
-          className={`mx-auto w-full rounded-lg object-cover ${isReel ? "aspect-[9/16]" : "aspect-square"}`}
-        />
-      ) : (
-        <div className={`mx-auto animate-pulse rounded-lg bg-white/10 ${isReel ? "aspect-[9/16]" : "aspect-square"}`} />
-      )}
+      <InstagramEmbedFrame
+        permalink={permalink}
+        title={caption ?? "Instagram"}
+        variant="lightbox"
+        className="h-full w-full rounded-lg"
+      />
       {caption && (
         <p className="mt-4 text-center text-sm text-white/70">{caption}</p>
       )}
-      <div className="text-center">
-        <ExternalLink href={permalink} label="Watch on Instagram" />
-      </div>
     </motion.div>
   );
 }
@@ -74,20 +47,19 @@ export function YouTubeLightbox({
   return (
     <motion.div
       {...panelMotion}
-      className="relative w-full max-w-[min(92vw,960px)]"
+      className="relative aspect-video w-full max-w-[min(92vw,960px)]"
       onClick={(e) => e.stopPropagation()}
     >
-      <img
-        src={youtubeThumbnail(url)}
-        alt={caption ?? "YouTube video"}
-        className="aspect-video w-full rounded-lg object-cover"
+      <iframe
+        src={youtubeEmbedUrl(url)}
+        title={caption ?? "YouTube video"}
+        className="h-full w-full rounded-lg border-0 bg-black"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
       />
       {caption && (
         <p className="mt-4 text-center text-sm text-white/70">{caption}</p>
       )}
-      <div className="text-center">
-        <ExternalLink href={url} label="Watch on YouTube" />
-      </div>
     </motion.div>
   );
 }
@@ -102,20 +74,19 @@ export function DriveLightbox({
   return (
     <motion.div
       {...panelMotion}
-      className="relative w-full max-w-[min(90vw,720px)]"
+      className="relative aspect-[4/3] w-full max-w-[min(92vw,900px)]"
       onClick={(e) => e.stopPropagation()}
     >
-      <img
-        src={driveThumbnail(url)}
-        alt={caption ?? "Google Drive file"}
-        className="aspect-[4/3] w-full rounded-lg object-cover"
+      <iframe
+        src={driveEmbedUrl(url)}
+        title={caption ?? "Google Drive file"}
+        className="h-full w-full rounded-lg border-0 bg-black"
+        allow="autoplay; fullscreen"
+        allowFullScreen
       />
       {caption && (
         <p className="mt-4 text-center text-sm text-white/70">{caption}</p>
       )}
-      <div className="text-center">
-        <ExternalLink href={url} label="Open in Google Drive" />
-      </div>
     </motion.div>
   );
 }
