@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { rotatingHeadlines } from "../data/content";
-import { OpenableImage } from "./OpenableImage";
 
 export function Hero() {
   const [index, setIndex] = useState(0);
@@ -14,82 +13,83 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-screen pt-24 pb-0">
-      <div className="mx-auto max-w-5xl px-5 text-center md:px-8">
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="text-[11px] tracking-[0.3em] text-ink-faint uppercase"
-        >
-          Portfolio · 2026
-        </motion.p>
+    <section className="relative flex min-h-screen items-center overflow-hidden pt-20 pb-12">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_40%,rgba(24,24,27,0.05),transparent_55%)]" />
 
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-6 text-[clamp(2.2rem,6vw,4.5rem)] leading-[1.08] font-medium tracking-tight text-ink"
-        >
-          Pavan Thakkar builds brands from zero — and the AI systems that scale
-          them.
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.35 }}
-          className="mx-auto mt-5 max-w-lg text-base text-ink-muted md:text-lg"
-        >
-          6 years · 3 brands · Godhra, Gujarat
-        </motion.p>
-
-        <div className="mx-auto mt-6 h-12 max-w-2xl overflow-hidden">
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={index}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.4 }}
-              className="text-sm text-ink-muted md:text-base"
-            >
-              {rotatingHeadlines[index]}
-            </motion.p>
-          </AnimatePresence>
-        </div>
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 60 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="relative mx-auto mt-14 max-w-4xl px-5 md:mt-20 md:px-8"
-      >
-        <OpenableImage
-          src="/pavan-headshot.png"
-          alt="Pavan Thakkar"
-          caption="Pavan Thakkar — professional headshot"
-          grayscale
-          className="aspect-[4/5] w-full rounded-sm md:aspect-[16/11]"
-        />
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-        className="flex flex-col items-center gap-3 py-16"
-      >
-        <p className="text-[10px] tracking-[0.25em] text-ink-faint uppercase">
-          Scroll to explore
-        </p>
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 md:grid-cols-2 md:gap-14 md:px-8">
         <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
-          className="h-8 w-[1px] bg-ink/20"
-        />
-      </motion.div>
+          initial={{ opacity: 0, x: -24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-10"
+        >
+          <p className="text-[11px] tracking-[0.3em] text-ink-faint uppercase">
+            Portfolio · 2026
+          </p>
+
+          <h1 className="mt-5 text-[clamp(2.5rem,5vw,4rem)] leading-[1.05] font-medium tracking-tight text-ink">
+            Pavan Thakkar
+          </h1>
+
+          <p className="mt-4 text-lg leading-relaxed text-ink-muted md:text-xl">
+            Brand builder. Marketing leader.
+            <br />
+            AI systems architect.
+          </p>
+
+          <p className="mt-3 text-sm text-ink-faint md:text-base">
+            6 years · 3 brands built from scratch · Godhra, Gujarat
+          </p>
+
+          <div className="mt-8 h-14 overflow-hidden border-l border-ink/15 pl-4">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={index}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.4 }}
+                className="text-sm leading-relaxed text-ink md:text-base"
+              >
+                {rotatingHeadlines[index]}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="mt-12 flex items-center gap-3"
+          >
+            <p className="text-[10px] tracking-[0.25em] text-ink-faint uppercase">
+              Scroll
+            </p>
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
+              className="h-6 w-[1px] bg-ink/25"
+            />
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.97 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          className="relative"
+          aria-hidden
+        >
+          <div className="pointer-events-none relative aspect-[4/5] overflow-hidden rounded-sm md:aspect-[3/4]">
+            <img
+              src="/pavan-headshot.png"
+              alt=""
+              className="h-full w-full object-cover object-top grayscale"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-canvas/30 via-transparent to-transparent" />
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 }

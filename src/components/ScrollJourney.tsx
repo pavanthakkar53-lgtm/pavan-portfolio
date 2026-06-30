@@ -7,6 +7,8 @@ import {
 } from "framer-motion";
 import { timeline } from "../data/content";
 
+const NAV_OFFSET = "5.5rem";
+
 export function ScrollJourney() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -27,12 +29,18 @@ export function ScrollJourney() {
   const item = timeline[active];
 
   return (
-    <section id="journey" ref={containerRef} className="relative" style={{ height: `${timeline.length * 100}vh` }}>
-      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(24,24,27,0.04),transparent_50%)]" />
-
-        <div className="mx-auto w-full max-w-6xl px-5 md:px-8">
-          <div className="mb-10 flex items-end justify-between gap-6">
+    <section
+      id="journey"
+      ref={containerRef}
+      className="relative z-20"
+      style={{ height: `${timeline.length * 100}vh` }}
+    >
+      <div
+        className="sticky z-20 flex min-h-[calc(100vh-5.5rem)] flex-col bg-canvas"
+        style={{ top: NAV_OFFSET }}
+      >
+        <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-5 py-8 md:px-8 md:py-10">
+          <div className="mb-8 flex shrink-0 items-end justify-between gap-6">
             <div>
               <p className="text-[11px] tracking-[0.25em] text-ink-faint uppercase">
                 Scroll to travel
@@ -41,17 +49,17 @@ export function ScrollJourney() {
                 The journey
               </h2>
             </div>
-            <div className="hidden text-right md:block">
-              <p className="text-6xl font-light text-ink/10">
+            <div className="shrink-0 text-right">
+              <p className="text-4xl font-medium text-ink/30 md:text-5xl">
                 {String(active + 1).padStart(2, "0")}
               </p>
-              <p className="text-xs tracking-widest text-ink-faint uppercase">
+              <p className="text-xs tracking-widest text-ink-muted uppercase">
                 of {String(timeline.length).padStart(2, "0")}
               </p>
             </div>
           </div>
 
-          <div className="mb-8 flex gap-1">
+          <div className="mb-6 flex shrink-0 gap-1">
             {timeline.map((_, i) => (
               <div
                 key={i}
@@ -69,53 +77,45 @@ export function ScrollJourney() {
           <AnimatePresence mode="wait">
             <motion.div
               key={item.period}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -30 }}
-              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="grid gap-10 md:grid-cols-[1.1fr_0.9fr] md:items-end"
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="grid min-h-0 flex-1 gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center"
             >
-              <div>
+              <div className="min-w-0">
                 <p className="text-xs tracking-[0.2em] text-ink-muted uppercase">
                   {item.period}
                 </p>
-                <h3 className="mt-3 text-4xl font-medium tracking-tight text-ink md:text-6xl md:leading-[1.05]">
+                <h3 className="mt-2 text-3xl font-medium tracking-tight text-ink md:text-5xl md:leading-[1.08]">
                   {item.title}
                 </h3>
-                <p className="mt-4 text-lg text-ink-muted md:text-xl">
+                <p className="mt-3 text-base text-ink-muted md:text-lg">
                   {item.role}
                 </p>
-                <p className="mt-2 text-sm tracking-wide text-accent uppercase">
+                <p className="mt-1 text-sm tracking-wide text-accent uppercase">
                   {item.badge}
                 </p>
-                <p className="mt-8 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
+                <p className="mt-6 max-w-xl text-sm leading-relaxed text-ink-muted md:text-base">
                   {item.quote}
                 </p>
               </div>
 
-              <motion.div
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.15, duration: 0.5 }}
-                className="flex aspect-[4/5] items-center justify-center rounded-sm bg-[linear-gradient(160deg,#ececee,#f3f3f4)] md:aspect-[3/4]"
-              >
-                <p className="px-8 text-center text-[11px] tracking-[0.2em] text-ink-faint uppercase">
+              <div className="flex aspect-[4/3] min-h-[180px] items-center justify-center rounded-sm bg-[linear-gradient(160deg,#ececee,#f3f3f4)] md:aspect-[3/4] md:max-h-[340px]">
+                <p className="px-6 text-center text-[11px] tracking-[0.2em] text-ink-faint uppercase">
                   {item.imageLabel}
-                  <br />
-                  <span className="mt-2 inline-block text-ink-muted normal-case tracking-normal">
-                    Photo coming — tap to open when added
-                  </span>
                 </p>
-              </motion.div>
+              </div>
             </motion.div>
           </AnimatePresence>
 
-          <motion.p
-            className="mt-12 text-center text-xs tracking-[0.2em] text-ink-faint uppercase md:mt-16"
-            animate={{ opacity: active === timeline.length - 1 ? 0.4 : 1 }}
+          <p
+            className={`mt-8 shrink-0 text-center text-xs tracking-[0.2em] uppercase ${
+              active === timeline.length - 1 ? "text-ink-faint/40" : "text-ink-faint"
+            }`}
           >
             Keep scrolling ↓
-          </motion.p>
+          </p>
         </div>
       </div>
     </section>

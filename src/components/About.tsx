@@ -11,12 +11,15 @@ export function About() {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <section id="about" className="relative -mt-8 pb-32 md:-mt-16 md:pb-40">
+    <section
+      id="about"
+      className="relative z-30 bg-canvas py-20 md:py-28"
+    >
       <div className="mx-auto grid max-w-6xl gap-16 px-5 md:grid-cols-2 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7 }}
         >
           <p className="text-[11px] tracking-[0.25em] text-ink-faint uppercase">
@@ -49,7 +52,7 @@ export function About() {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7, delay: 0.15 }}
           className="flex flex-col justify-end"
         >
