@@ -1,16 +1,13 @@
-import { useRef } from "react";
-import { useInView } from "framer-motion";
 import type { MediaItem } from "../data/content";
 import { useLightbox } from "../context/LightboxContext";
+import { useInstagramThumbnail } from "../hooks/useInstagramThumbnail";
 import {
-  driveEmbedUrl,
   driveThumbnail,
-  instagramEmbedUrl,
   isInstagramReel,
   isPortraitMedia,
   mediaCaption,
   toLightboxItem,
-  youtubeEmbedUrl,
+  youtubeThumbnail,
 } from "../lib/mediaUtils";
 
 type MediaCollageProps = {
@@ -34,31 +31,14 @@ function cellLayout(item: MediaItem) {
       ? "aspect-square"
       : "aspect-[4/3]";
 
-  return { sizeClass, aspectClass, portrait, square };
+  return { sizeClass, aspectClass };
 }
 
-function embedSrc(item: MediaItem): string | null {
-  switch (item.kind) {
-    case "youtube":
-      return youtubeEmbedUrl(item.url);
-    case "instagram":
-      return instagramEmbedUrl(item.permalink);
-    case "drive":
-      return item.previewType === "video" ? driveEmbedUrl(item.url) : null;
-    default:
-      return null;
-  }
-}
-
-function AutoplayFrame({
-  item,
-  inView,
-}: {
-  item: MediaItem;
-  inView: boolean;
-}) {
+function PreviewFrame({ item }: { item: MediaItem }) {
   const caption = mediaCaption(item);
-  const { portrait } = cellLayout(item);
+  const instagramThumb = useInstagramThumbnail(
+    item.kind === "instagram" ? item.permalink : "",
+  );
 
   if (item.kind === "image") {
     return (
@@ -71,7 +51,18 @@ function AutoplayFrame({
     );
   }
 
-  if (item.kind === "drive" && item.previewType !== "video") {
+  if (item.kind === "youtube") {
+    return (
+      <img
+        src={youtubeThumbnail(item.url)}
+        alt={caption}
+        className="absolute inset-0 h-full w-full object-cover"
+        loading="lazy"
+      />
+    );
+  }
+
+  if (item.kind === "drive") {
     return (
       <img
         src={driveThumbnail(item.url)}
@@ -82,55 +73,36 @@ function AutoplayFrame({
     );
   }
 
-  const src = embedSrc(item);
-  if (!inView || !src) {
-    return <div className="absolute inset-0 animate-pulse bg-zinc-200" />;
-  }
-
-  const cropInstagram =
-    item.kind === "instagram" && (portrait || item.permalink.includes("/p/"));
-
-  if (cropInstagram) {
+  if (item.kind === "instagram") {
+    if (!instagramThumb) {
+      return <div className="absolute inset-0 animate-pulse bg-zinc-200" />;
+    }
     return (
-      <iframe
-        src={src}
-        title={caption}
-        className="pointer-events-none absolute top-1/2 left-1/2 h-[230%] w-[230%] -translate-x-1/2 -translate-y-1/2 border-0"
-        allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+      <img
+        src={instagramThumb}
+        alt={caption}
+        className="absolute inset-0 h-full w-full object-cover"
         loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
       />
     );
   }
 
-  return (
-    <iframe
-      src={src}
-      title={caption}
-      className="pointer-events-none absolute inset-0 h-full w-full border-0"
-      allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-      loading="lazy"
-      referrerPolicy="no-referrer-when-downgrade"
-    />
-  );
+  return null;
 }
 
 function CollageCell({ item }: { item: MediaItem }) {
   const { open } = useLightbox();
-  const ref = useRef<HTMLButtonElement>(null);
-  const inView = useInView(ref, { margin: "80px", amount: 0.1 });
   const caption = mediaCaption(item);
   const { sizeClass, aspectClass } = cellLayout(item);
 
   return (
     <button
-      ref={ref}
       type="button"
       onClick={() => open(toLightboxItem(item))}
-      className={`${sizeClass} ${aspectClass} relative block shrink-0 cursor-zoom-in overflow-hidden rounded-sm bg-zinc-900`}
+      className={`${sizeClass} ${aspectClass} relative block shrink-0 cursor-zoom-in overflow-hidden rounded-sm bg-zinc-200`}
       aria-label={caption}
     >
-      <AutoplayFrame item={item} inView={inView} />
+      <PreviewFrame item={item} />
     </button>
   );
 }
@@ -148,4 +120,3 @@ export function MediaCollage({ items, className = "" }: MediaCollageProps) {
     </div>
   );
 }
-

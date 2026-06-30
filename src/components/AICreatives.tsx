@@ -1,8 +1,7 @@
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { aiCreatives } from "../data/content";
 import { useLightbox } from "../context/LightboxContext";
-import { instagramEmbedUrl } from "../lib/mediaUtils";
+import { useInstagramThumbnail } from "../hooks/useInstagramThumbnail";
 
 function AIReelTile({
   permalink,
@@ -12,32 +11,27 @@ function AIReelTile({
   caption: string;
 }) {
   const { open } = useLightbox();
-  const ref = useRef<HTMLButtonElement>(null);
-  const inView = useInView(ref, { margin: "60px" });
+  const thumb = useInstagramThumbnail(permalink);
   const isReel = permalink.includes("/reel/");
 
   return (
     <button
-      ref={ref}
       type="button"
       onClick={() => open({ type: "instagram", permalink, caption })}
-      className="relative aspect-[9/16] w-[100px] shrink-0 cursor-zoom-in overflow-hidden rounded-sm bg-zinc-900 sm:w-[116px] md:w-[128px]"
+      className={`relative shrink-0 cursor-zoom-in overflow-hidden rounded-sm bg-zinc-200 ${
+        isReel ? "aspect-[9/16] w-[100px] sm:w-[116px] md:w-[128px]" : "aspect-square w-[100px] sm:w-[116px] md:w-[128px]"
+      }`}
       aria-label={caption}
     >
-      {inView ? (
-        <iframe
-          src={instagramEmbedUrl(permalink)}
-          title={caption}
-          className={`pointer-events-none absolute top-1/2 left-1/2 border-0 ${
-            isReel
-              ? "h-[280%] w-[280%] -translate-x-1/2 -translate-y-[46%]"
-              : "h-[240%] w-[240%] -translate-x-1/2 -translate-y-1/2"
-          }`}
-          allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+      {thumb ? (
+        <img
+          src={thumb}
+          alt={caption}
+          className="h-full w-full object-cover"
           loading="lazy"
         />
       ) : (
-        <div className="absolute inset-0 bg-zinc-200" />
+        <div className="h-full w-full animate-pulse bg-zinc-200" />
       )}
     </button>
   );
@@ -62,7 +56,7 @@ export function AICreatives() {
             Where marketing meets machine imagination
           </h2>
           <p className="mt-4 max-w-xl text-base text-ink-muted md:text-lg">
-            Dwell Baby Air launch — our AI reels, autoplay muted. Tap to expand.
+            Dwell Baby Air launch — tap any frame to watch full reel.
           </p>
         </motion.div>
 
