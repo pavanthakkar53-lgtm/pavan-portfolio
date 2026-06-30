@@ -91,16 +91,17 @@ export function Gallery() {
                 {activeCategory}
               </p>
 
-              <div className="mt-6 grid max-h-[60vh] grid-cols-2 gap-3 overflow-y-auto pr-1 md:grid-cols-3 md:gap-4">
+              <div className="mt-6 flex max-h-[62vh] flex-wrap content-start justify-center gap-4 overflow-y-auto pr-1 md:justify-start">
                 {filtered.map((item, i) => (
                   <motion.div
                     key={item.title + i}
                     initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: i * 0.06 }}
+                    className="w-[220px] shrink-0 md:w-[260px]"
                   >
                     <MediaTile item={item.media} />
-                    <p className="mt-2 text-sm text-ink">{item.title}</p>
+                    <p className="mt-2 text-center text-sm text-ink">{item.title}</p>
                   </motion.div>
                 ))}
               </div>

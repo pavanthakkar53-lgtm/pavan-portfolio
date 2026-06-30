@@ -120,9 +120,9 @@ export function ScrollJourney() {
               </div>
 
               {hasMedia ? (
-                <div className="grid max-h-[60vh] grid-cols-2 gap-3 overflow-y-auto pr-1 md:max-h-[65vh]">
+                <div className="flex max-h-[68vh] flex-wrap content-start justify-center gap-4 overflow-y-auto pr-1 md:max-h-[72vh] md:justify-end">
                   {item.media.map((m, i) => (
-                    <MediaTile key={i} item={m} />
+                    <MediaTile key={i} item={m} className="shrink-0" />
                   ))}
                 </div>
               ) : (

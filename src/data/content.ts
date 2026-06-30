@@ -59,7 +59,7 @@ export const timeline: TimelineEntry[] = [
       },
       {
         kind: "drive",
-        url: "https://drive.google.com/file/d/1f4UwarLWugEWH8Jsr0pQ5MqFYPfJZv8f/view",
+        url: "https://drive.google.com/file/d/1f4UwarLWugEWH8Jsr0pQ5MqFYPfJZv8f/view?usp=sharing",
         caption: "3-day stage-hosted event — planning & management",
         previewType: "video",
       },

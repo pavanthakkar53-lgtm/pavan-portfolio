@@ -7,8 +7,11 @@ import {
   type ReactNode,
 } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { InstagramEmbed } from "../components/InstagramEmbed";
-import { extractYouTubeId, extractDriveId } from "../lib/mediaUtils";
+import {
+  driveEmbedUrl,
+  instagramEmbedUrl,
+  youtubeEmbedUrl,
+} from "../lib/mediaUtils";
 
 type LightboxItem =
   | { type: "image"; src: string; alt: string; caption?: string }
@@ -92,13 +95,21 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.96, opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="relative max-h-[90vh] w-full max-w-[560px] overflow-y-auto"
+                className="relative aspect-[9/16] w-full max-w-[min(90vw,420px)]"
                 onClick={(e) => e.stopPropagation()}
               >
-                <InstagramEmbed
-                  permalink={item.permalink}
-                  caption={item.caption}
+                <iframe
+                  className="h-full w-full rounded-lg border-0 bg-black"
+                  src={instagramEmbedUrl(item.permalink)}
+                  title={item.caption ?? "Instagram"}
+                  allow="autoplay; encrypted-media; fullscreen"
+                  allowFullScreen
                 />
+                {item.caption && (
+                  <p className="mt-4 text-center text-sm text-white/70">
+                    {item.caption}
+                  </p>
+                )}
               </motion.div>
             )}
 
@@ -108,12 +119,12 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.96, opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="relative aspect-video w-full max-w-4xl"
+                className="relative aspect-[9/16] w-full max-w-[min(90vw,420px)]"
                 onClick={(e) => e.stopPropagation()}
               >
                 <iframe
-                  className="h-full w-full rounded-lg"
-                  src={`https://www.youtube.com/embed/${extractYouTubeId(item.url)}?autoplay=1`}
+                  className="h-full w-full rounded-lg border-0 bg-black"
+                  src={youtubeEmbedUrl(item.url)}
                   title={item.caption ?? "YouTube video"}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -132,14 +143,14 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.96, opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="relative aspect-video w-full max-w-4xl"
+                className="relative aspect-[9/16] w-full max-w-[min(90vw,420px)]"
                 onClick={(e) => e.stopPropagation()}
               >
                 <iframe
-                  className="h-full w-full rounded-lg bg-black"
-                  src={`https://drive.google.com/file/d/${extractDriveId(item.url)}/preview`}
+                  className="h-full w-full rounded-lg border-0 bg-black"
+                  src={driveEmbedUrl(item.url)}
                   title={item.caption ?? "Drive file"}
-                  allow="autoplay"
+                  allow="autoplay; fullscreen"
                   allowFullScreen
                 />
                 {item.caption && (

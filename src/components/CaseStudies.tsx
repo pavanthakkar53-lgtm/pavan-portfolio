@@ -90,9 +90,9 @@ export function CaseStudies() {
               </div>
 
               {hasMedia ? (
-                <div className="grid max-h-[480px] grid-cols-2 gap-3 overflow-y-auto pr-1">
+                <div className="flex max-h-[520px] flex-wrap content-start justify-center gap-4 overflow-y-auto pr-1 md:justify-end">
                   {study.media.map((m, i) => (
-                    <MediaTile key={i} item={m} />
+                    <MediaTile key={i} item={m} className="shrink-0" />
                   ))}
                 </div>
               ) : (
