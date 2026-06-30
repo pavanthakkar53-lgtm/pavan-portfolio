@@ -32,13 +32,14 @@ export function Hero() {
           </h1>
 
           <p className="mt-4 text-lg leading-relaxed text-ink-muted md:text-xl">
-            Brand builder. Marketing leader.
+            I think like an owner.
             <br />
-            AI systems architect.
+            Marketing is just how it shows up.
           </p>
 
           <p className="mt-3 text-sm text-ink-faint md:text-base">
-            6 years · 3 brands built from scratch · Godhra, Gujarat
+            Six years building brands, running campaigns, and making the calls
+            that matter past this quarter — Godhra, Gujarat
           </p>
 
           <div className="mt-8 h-14 overflow-hidden border-l border-ink/15 pl-4">

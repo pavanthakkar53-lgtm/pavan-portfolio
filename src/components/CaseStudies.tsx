@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import { caseStudies } from "../data/content";
+import { MediaTile } from "./MediaTile";
 
 export function CaseStudies() {
   const [active, setActive] = useState(0);
@@ -8,6 +9,7 @@ export function CaseStudies() {
   const inView = useInView(ref, { margin: "-40%" });
 
   const study = caseStudies[active];
+  const hasMedia = study.media.length > 0;
 
   return (
     <section id="work" ref={ref} className="relative py-32 md:py-48">
@@ -69,16 +71,37 @@ export function CaseStudies() {
                   <span className="text-ink">Result — </span>
                   {study.result}
                 </p>
+
+                {"links" in study && study.links && study.links.length > 0 && (
+                  <div className="flex flex-wrap gap-x-5 gap-y-2 pt-2">
+                    {study.links.map((link) => (
+                      <a
+                        key={link.url}
+                        href={link.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs tracking-wide text-ink underline underline-offset-4 hover:text-accent"
+                      >
+                        {link.label} ↗
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              <button
-                type="button"
-                className="group flex aspect-[4/3] cursor-zoom-in items-center justify-center rounded-sm bg-[linear-gradient(160deg,#ececee,#f0f0f2)] transition hover:opacity-90"
-              >
-                <span className="text-[11px] tracking-[0.2em] text-ink-faint uppercase group-hover:text-ink-muted">
-                  Gallery — tap to open when images added
-                </span>
-              </button>
+              {hasMedia ? (
+                <div className="grid max-h-[480px] grid-cols-2 gap-3 overflow-y-auto pr-1">
+                  {study.media.map((m, i) => (
+                    <MediaTile key={i} item={m} />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex aspect-[4/3] items-center justify-center rounded-sm bg-[linear-gradient(160deg,#ececee,#f0f0f2)]">
+                  <span className="text-[11px] tracking-[0.2em] text-ink-faint uppercase">
+                    No media yet
+                  </span>
+                </div>
+              )}
             </div>
           </motion.article>
         </AnimatePresence>

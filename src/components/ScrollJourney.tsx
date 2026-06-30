@@ -6,6 +6,7 @@ import {
   useScroll,
 } from "framer-motion";
 import { timeline } from "../data/content";
+import { MediaTile } from "./MediaTile";
 
 const NAV_OFFSET = "5.5rem";
 
@@ -27,6 +28,7 @@ export function ScrollJourney() {
   });
 
   const item = timeline[active];
+  const hasMedia = item.media.length > 0;
 
   return (
     <section
@@ -81,7 +83,7 @@ export function ScrollJourney() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="grid min-h-0 flex-1 gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center"
+              className="grid min-h-0 flex-1 gap-8 overflow-y-auto md:grid-cols-[1fr_1fr] md:items-start"
             >
               <div className="min-w-0">
                 <p className="text-xs tracking-[0.2em] text-ink-muted uppercase">
@@ -99,13 +101,37 @@ export function ScrollJourney() {
                 <p className="mt-6 max-w-xl text-sm leading-relaxed text-ink-muted md:text-base">
                   {item.quote}
                 </p>
+
+                {item.links && item.links.length > 0 && (
+                  <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
+                    {item.links.map((link) => (
+                      <a
+                        key={link.url}
+                        href={link.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs tracking-wide text-ink underline underline-offset-4 hover:text-accent"
+                      >
+                        {link.label} ↗
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              <div className="flex aspect-[4/3] min-h-[180px] items-center justify-center rounded-sm bg-[linear-gradient(160deg,#ececee,#f3f3f4)] md:aspect-[3/4] md:max-h-[340px]">
-                <p className="px-6 text-center text-[11px] tracking-[0.2em] text-ink-faint uppercase">
-                  {item.imageLabel}
-                </p>
-              </div>
+              {hasMedia ? (
+                <div className="grid max-h-[60vh] grid-cols-2 gap-3 overflow-y-auto pr-1 md:max-h-[65vh]">
+                  {item.media.map((m, i) => (
+                    <MediaTile key={i} item={m} />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex aspect-[4/3] min-h-[180px] items-center justify-center rounded-sm bg-[linear-gradient(160deg,#ececee,#f3f3f4)] md:aspect-[3/4] md:max-h-[340px]">
+                  <p className="px-6 text-center text-[11px] tracking-[0.2em] text-ink-faint uppercase">
+                    No media yet
+                  </p>
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
 

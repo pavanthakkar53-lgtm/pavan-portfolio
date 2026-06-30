@@ -58,10 +58,12 @@ export function About() {
         >
           <div className="rounded-sm bg-ink p-8 text-white md:p-10">
             <p className="text-[11px] tracking-[0.2em] text-white/50 uppercase">
-              Positioning
+              In short
             </p>
             <p className="mt-4 text-xl leading-relaxed font-light md:text-2xl">
-              AI-first marketer who also builds the systems marketing runs on.
+              Campaigns are the visible part. The part that matters more is
+              whether the brand, the systems, and the relationships are still
+              standing in three years.
             </p>
           </div>
         </motion.div>

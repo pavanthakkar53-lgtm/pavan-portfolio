@@ -6,23 +6,11 @@ import {
   useScroll,
 } from "framer-motion";
 import { galleryItems } from "../data/content";
-import { useLightbox } from "../context/LightboxContext";
-
-function makePlaceholderDataUrl(title: string, index: number) {
-  const light = index % 2 === 0;
-  const bg = light ? "#e8e8ea" : "#2a2a30";
-  const fg = light ? "#52525b" : "#a1a1aa";
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="${index % 3 === 0 ? 1000 : index % 3 === 1 ? 700 : 900}">
-    <rect width="100%" height="100%" fill="${bg}"/>
-    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="${fg}" font-family="Helvetica,Arial,sans-serif" font-size="14">${title}</text>
-  </svg>`;
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
-}
+import { MediaTile } from "./MediaTile";
 
 export function Gallery() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  const { open } = useLightbox();
 
   const categories = useMemo(
     () => Array.from(new Set(galleryItems.map((g) => g.category))),
@@ -103,42 +91,18 @@ export function Gallery() {
                 {activeCategory}
               </p>
 
-              <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
-                {filtered.map((item, i) => {
-                  const src = makePlaceholderDataUrl(item.title, active * 10 + i);
-                  return (
-                    <motion.button
-                      key={item.title}
-                      type="button"
-                      initial={{ opacity: 0, scale: 0.98 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: i * 0.06 }}
-                      whileHover={{ y: -3 }}
-                      onClick={() =>
-                        open({
-                          src,
-                          alt: item.title,
-                          caption: `${item.category} — ${item.title}`,
-                        })
-                      }
-                      className="group cursor-zoom-in overflow-hidden rounded-sm text-left"
-                    >
-                      <img
-                        src={src}
-                        alt={item.title}
-                        className={`w-full object-cover transition duration-500 group-hover:scale-[1.02] ${
-                          i % 3 === 0 ? "h-40 md:h-52" : i % 3 === 1 ? "h-32 md:h-40" : "h-44 md:h-56"
-                        }`}
-                      />
-                      <p className="mt-2 text-sm text-ink transition group-hover:text-ink-muted">
-                        {item.title}
-                      </p>
-                      <span className="text-[10px] tracking-widest text-ink-faint uppercase opacity-0 transition group-hover:opacity-100">
-                        Open
-                      </span>
-                    </motion.button>
-                  );
-                })}
+              <div className="mt-6 grid max-h-[60vh] grid-cols-2 gap-3 overflow-y-auto pr-1 md:grid-cols-3 md:gap-4">
+                {filtered.map((item, i) => (
+                  <motion.div
+                    key={item.title + i}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.06 }}
+                  >
+                    <MediaTile item={item.media} />
+                    <p className="mt-2 text-sm text-ink">{item.title}</p>
+                  </motion.div>
+                ))}
               </div>
             </motion.div>
           </AnimatePresence>

@@ -24,7 +24,7 @@ export function OpenableImage({
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.995 }}
       transition={{ duration: 0.3 }}
-      onClick={() => open({ src, alt, caption })}
+      onClick={() => open({ type: "image", src, alt, caption })}
       className={`group relative cursor-zoom-in overflow-hidden ${className}`}
       aria-label={`Open ${alt}`}
     >

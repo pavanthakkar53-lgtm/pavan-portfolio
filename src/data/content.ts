@@ -14,7 +14,26 @@ export const rotatingHeadlines = [
   "2 Best Stall Awards. 1 modular brick stall that made headlines.",
 ];
 
-export const timeline = [
+// ─── MEDIA TYPES ────────────────────────────────────────────────
+// Every "screen" (timeline era, case study, gallery item) can now hold
+// multiple media items instead of a single placeholder.
+export type MediaItem =
+  | { kind: "image"; src: string; alt: string }
+  | { kind: "instagram"; permalink: string; caption?: string }
+  | { kind: "youtube"; url: string; caption?: string }
+  | { kind: "drive"; url: string; caption?: string; previewType?: "video" | "image" };
+
+export type TimelineEntry = {
+  period: string;
+  title: string;
+  role: string;
+  badge: string;
+  quote: string;
+  media: MediaItem[];
+  links?: { label: string; url: string }[];
+};
+
+export const timeline: TimelineEntry[] = [
   {
     period: "2014–2019",
     title: "Foundation",
@@ -22,7 +41,7 @@ export const timeline = [
     badge: "Top 1% HSC Science · INSPIRE Scholar",
     quote:
       "Where I learned to observe, isolate variables, and not trust the first answer — turns out that's just marketing with different vocabulary.",
-    imageLabel: "Graduation / certificate",
+    media: [],
   },
   {
     period: "Dec 2019 – Aug 2020",
@@ -30,8 +49,24 @@ export const timeline = [
     role: "Teacher & Digital Content Strategist",
     badge: "COVID pivot",
     quote:
-      "COVID hit. 2,200 students needed online school overnight. I built the infrastructure, trained 75 teachers, and helped grow a YouTube channel to 370,000+ views in 6 months — with zero budget.",
-    imageLabel: "Classroom / YouTube channel",
+      "2,200 students needed online school overnight. I built the infrastructure, trained 75 teachers, and ran a YouTube channel that's still active today — now at 6.95k subscribers and 1,400+ videos. Also ran live events end-to-end, including a 3-day stage-hosted event covering planning, logistics, and on-the-ground management.",
+    media: [
+      {
+        kind: "drive",
+        url: "https://drive.google.com/file/d/1DOMPIL2_3dfcZz7vSg6fkkPXtl67kxC9/view",
+        caption: "Kalarav School",
+        previewType: "image",
+      },
+      {
+        kind: "drive",
+        url: "https://drive.google.com/file/d/1f4UwarLWugEWH8Jsr0pQ5MqFYPfJZv8f/view",
+        caption: "3-day stage-hosted event — planning & management",
+        previewType: "video",
+      },
+    ],
+    links: [
+      { label: "YouTube channel (live)", url: "https://www.youtube.com/@KalravSchoolGodhra" },
+    ],
   },
   {
     period: "Nov 2020 – Nov 2022",
@@ -40,7 +75,16 @@ export const timeline = [
     badge: "First marketing hire",
     quote:
       "First marketing hire at a company that had never had one. Built a 300+ page website from nothing. Grew organic traffic to 62,000+ visitors, social following to 42,000+. Managed ₹2.5 Cr+ in budget.",
-    imageLabel: "Website / packaging / store interior",
+    media: [
+      { kind: "youtube", url: "https://youtu.be/tXYYQMcPFgM", caption: "The Brick Store — experience center" },
+      { kind: "image", src: "https://designworkgroup.in/wp-content/uploads/2025/10/jjb-f.webp", alt: "JJB brand visual" },
+      { kind: "image", src: "https://designworkgroup.in/wp-content/uploads/2025/10/jjb-e.webp", alt: "JJB brand visual" },
+      { kind: "image", src: "https://designworkgroup.in/wp-content/uploads/2025/10/jjb-d.webp", alt: "JJB brand visual" },
+      { kind: "image", src: "https://designworkgroup.in/wp-content/uploads/2025/10/jjb-c.webp", alt: "JJB brand visual" },
+      { kind: "image", src: "https://designworkgroup.in/wp-content/uploads/2025/10/jjb-h.webp", alt: "JJB brand visual" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/C_kNSx2I2qE/", caption: "Store execution — TBS Kolkata" },
+    ],
+    links: [{ label: "jjbricks.com", url: "https://jjbricks.com/" }],
   },
   {
     period: "Sep 2023 – Apr 2025",
@@ -48,8 +92,28 @@ export const timeline = [
     role: "Team Lead, Brand Strategy & Marketing",
     badge: "Promoted to lead",
     quote:
-      "Promoted to lead a 10-person team. Took the product line to 570+ SKUs. Built India's first modular brick stall — 60 tons, 4,000 sq. ft., erected in 3 days — and won Best Stall Award two years running.",
-    imageLabel: "Modular brick stall at ACETECH",
+      "Promoted to lead a 10-person team. Took the product line to 570+ SKUs. Built India's first modular brick stall — 60 tons, 4,000 sq. ft., erected in 3 days — and won Best Stall Award two years running. Built an in-house inventory app that onboarded ₹30Cr+ of stock across a 720-acre operation. Launched The Brick Café — 10,000 sq. ft., concept to opening in 4 months — now heading to franchise.",
+    media: [
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DBn4sLop-M1/", caption: "Brick Café — behind the scenes 1" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DCO86R-pcqX/", caption: "Brick Café — behind the scenes 2" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DR4u5NLDF8m/", caption: "Brick Café — finalised" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DSXtERODC_X/", caption: "Brick Café — finalised 2" },
+      { kind: "youtube", url: "https://youtu.be/7NhJmPNyzEE", caption: "ACETECH Mumbai & Delhi" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DRZbisUinE-/", caption: "ACETECH — execution & coverage" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DOEAfjvDJe_/", caption: "IIID Ahmedabad" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DRl3tZejAse/", caption: "IIID Ahmedabad — stall design" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DErddcvIZRX/", caption: "IIID Ahmedabad — with people" },
+      { kind: "instagram", permalink: "https://www.instagram.com/p/DUTOx2viT9c/", caption: "IIID Hyderabad — carousel 1" },
+      { kind: "instagram", permalink: "https://www.instagram.com/p/DUYmyeQjHGJ/", caption: "IIID Hyderabad — carousel 2" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/C6um0ROIc9d/", caption: "International project documentation" },
+      { kind: "image", src: "https://www.jjbricks.com/dashdesk/files/tip/thumb_img/e3ecfc10-7a65-4dc9-a510-e0006dbc7a58/1772890607_thumb.jpg", alt: "JJB brochure" },
+      { kind: "image", src: "https://www.jjbricks.com/dashdesk/files/tip/thumb_img/d116d984-81f5-4be1-b358-1689b14e4c53/Screenshot%202023-11-29%20150720.png", alt: "JJB brochure" },
+    ],
+    links: [
+      { label: "jjbricks.com", url: "https://jjbricks.com/" },
+      { label: "@thebrickstore_india", url: "https://www.instagram.com/thebrickstore_india/" },
+      { label: "JJB brochure (PDF)", url: "https://drive.google.com/file/d/1aGgLVhnRYIMOJFY-aIiFDnKMqWuSAvY9/view" },
+    ],
   },
   {
     period: "May 2025 – Present",
@@ -57,8 +121,29 @@ export const timeline = [
     role: "Strategy & Digital Marketing Manager",
     badge: "Current role",
     quote:
-      "Leading a team of 10. Built an AI-powered B2B lead generation system — scraped 200,000+ dealer contacts, shortlisted 5,000 high-fit prospects, closed 100+ dealers for ₹1Cr+ in revenue.",
-    imageLabel: "Dwell products / campaigns / CRM",
+      "Leading a team of 10. Built an AI-powered B2B lead generation system — scraped 200,000+ dealer contacts, shortlisted 5,000 high-fit prospects, closed 100+ dealers for ₹1Cr+ in revenue. Influencer and celebrity campaigns drove ₹40L in e-commerce revenue in 5 months. Rebuilt CRM workflows with AI — quote turnaround dropped from 2+ hours to under 5 minutes.",
+    media: [
+      { kind: "image", src: "https://www.dwellventilation.com/web/image/product.image/231/image_1920/baby%20air%20banner.webp", alt: "Dwell Baby Air banner" },
+      { kind: "image", src: "https://www.dwellventilation.com/web/image/product.image/230/image_1920/ChatGPT%20Image%20Jun%2022%2C%202026%2C%2005_54_44%20PM.webp", alt: "Dwell Baby Air product" },
+      { kind: "image", src: "https://www.dwellventilation.com/web/image/product.image/234/image_1024/mobile%20banner%20hero.webp", alt: "Dwell mobile hero banner" },
+      { kind: "instagram", permalink: "https://www.instagram.com/p/DZZxCLVCSyH/", caption: "Sophie Choudry collaboration" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DZSfgg7PeXx/", caption: "Influencer collaboration" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DZFc343B-Xu/", caption: "Influencer collaboration" },
+      {
+        kind: "drive",
+        url: "https://drive.google.com/file/d/1yXb46_wI4XUU-Fkbo7XLqUye3lUxDLoz/view",
+        caption: "Dwell Master Air 2026 brochure — cover",
+        previewType: "image",
+      },
+    ],
+    links: [
+      { label: "dwellventilation.com", url: "https://dwellventilation.com/" },
+      { label: "Master Air microsite", url: "https://masterair.dwellventilation.com/" },
+      { label: "@dwell_air", url: "https://www.instagram.com/dwell_air/" },
+      { label: "Dwell Master Air brochure (PDF)", url: "https://drive.google.com/file/d/1391Vd8Q4-2dFj4omyv5H6ZWGOUL8mrt2/view" },
+      { label: "AI Marketing Platform (IVY)", url: "https://ivy-uni-drab.vercel.app/" },
+      { label: "IVY Listing Platform", url: "https://collaboration-9.preview.emergentagent.com/" },
+    ],
   },
 ];
 
@@ -72,6 +157,10 @@ export const caseStudies = [
       "Built everything from zero — product naming and categorization, a 300+ page custom website, packaging redesign, social media presence, print and digital collateral. Expanded the product range from 50 to 450+ variants.",
     result: "62,000+ organic website visitors. 42,000+ social followers. ₹2.5 Cr+ budget managed end-to-end.",
     tags: ["Branding", "Web", "GTM"],
+    media: [
+      { kind: "image", src: "https://designworkgroup.in/wp-content/uploads/2025/10/jjb-f.webp", alt: "JJB brand visual" },
+      { kind: "youtube", url: "https://youtu.be/tXYYQMcPFgM", caption: "The Brick Store — experience center" },
+    ] as MediaItem[],
   },
   {
     id: "modular-stall",
@@ -82,6 +171,10 @@ export const caseStudies = [
       "Conceptualized and led India's first modular brick stall — coordinated 15+ agencies, architects, and structural engineers to build a 4,000 sq. ft., 60-ton structure, assembled on-site in just 3 days.",
     result: "Best Stall Award, two years running. Became one of the most talked-about stalls at the show.",
     tags: ["Exhibitions", "Leadership", "Innovation"],
+    media: [
+      { kind: "youtube", url: "https://youtu.be/7NhJmPNyzEE", caption: "ACETECH Mumbai & Delhi" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DRZbisUinE-/", caption: "ACETECH — execution & coverage" },
+    ] as MediaItem[],
   },
   {
     id: "brick-cafe",
@@ -92,6 +185,12 @@ export const caseStudies = [
       "Conceptualized, designed, and launched The Brick Café — a 10,000 sq. ft. experiential brand extension — from idea to opening in 4 months.",
     result: "Now being scaled into a franchise model across India.",
     tags: ["Brand Extension", "Experiential"],
+    media: [
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DBn4sLop-M1/", caption: "Behind the scenes 1" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DCO86R-pcqX/", caption: "Behind the scenes 2" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DR4u5NLDF8m/", caption: "Finalised" },
+      { kind: "instagram", permalink: "https://www.instagram.com/reel/DSXtERODC_X/", caption: "Finalised 2" },
+    ] as MediaItem[],
   },
   {
     id: "ai-leads",
@@ -102,6 +201,7 @@ export const caseStudies = [
       "Built an AI-powered lead generation system from the ground up. Wrote Python scrapers that pulled 200,000+ dealer contacts. Used AI to shortlist 5,000 high-fit prospects. Then closed the first 100+ dealers personally.",
     result: "₹1Cr+ in B2B dealer revenue. A repeatable, AI-assisted pipeline the team still runs today.",
     tags: ["AI", "B2B", "Python"],
+    media: [] as MediaItem[],
   },
   {
     id: "marketing-platform",
@@ -112,6 +212,11 @@ export const caseStudies = [
       "Started building an AI Marketing Intelligence Platform — combining website intelligence, SEO, social, content, WhatsApp automation, and campaign analytics into one system.",
     result: "UI and authentication are live; backend 60% complete. Commercial launch planned.",
     tags: ["Product", "AI Platform"],
+    media: [] as MediaItem[],
+    links: [
+      { label: "Live app (create account to explore)", url: "https://ivy-uni-drab.vercel.app/" },
+      { label: "Listing platform (in development)", url: "https://collaboration-9.preview.emergentagent.com/" },
+    ],
   },
   {
     id: "inventory-app",
@@ -122,6 +227,7 @@ export const caseStudies = [
       "Built an in-house inventory management app designed for accuracy at scale across a sprawling physical footprint.",
     result: "₹30Cr+ worth of stock onboarded in 4 months, tracked with near-zero location or count errors.",
     tags: ["Systems", "Operations"],
+    media: [] as MediaItem[],
   },
 ];
 
@@ -211,19 +317,27 @@ export const skillGroups = [
   },
 ];
 
-export const galleryItems = [
-  { title: "Modular brick stall", category: "Exhibitions" },
-  { title: "ACETECH Mumbai", category: "Exhibitions" },
-  { title: "ARCHEX Delhi", category: "Exhibitions" },
-  { title: "Flagship store interior", category: "Retail" },
-  { title: "Factory outlet", category: "Retail" },
-  { title: "The Brick Café", category: "Experiential" },
-  { title: "Team on-site", category: "Behind the scenes" },
-  { title: "Dwell product shot", category: "Dwell" },
-  { title: "Influencer campaign", category: "Dwell" },
-  { title: "Analytics dashboard", category: "Data" },
-  { title: "SEO rankings", category: "Data" },
-  { title: "Packaging redesign", category: "Branding" },
+// ─── GALLERY ────────────────────────────────────────────────────
+// Real assets, organized by category. Each item now carries actual media
+// instead of a generated placeholder tile.
+export const galleryItems: {
+  title: string;
+  category: string;
+  media: MediaItem;
+}[] = [
+  { title: "Modular brick stall — ACETECH", category: "Exhibitions", media: { kind: "youtube", url: "https://youtu.be/7NhJmPNyzEE" } },
+  { title: "ACETECH execution & coverage", category: "Exhibitions", media: { kind: "instagram", permalink: "https://www.instagram.com/reel/DRZbisUinE-/" } },
+  { title: "IIID Ahmedabad", category: "Exhibitions", media: { kind: "instagram", permalink: "https://www.instagram.com/reel/DOEAfjvDJe_/" } },
+  { title: "IIID Ahmedabad — stall design", category: "Exhibitions", media: { kind: "instagram", permalink: "https://www.instagram.com/reel/DRl3tZejAse/" } },
+  { title: "IIID Hyderabad — carousel", category: "Exhibitions", media: { kind: "instagram", permalink: "https://www.instagram.com/p/DUTOx2viT9c/" } },
+  { title: "Store execution — TBS Kolkata", category: "Retail", media: { kind: "instagram", permalink: "https://www.instagram.com/reel/C_kNSx2I2qE/" } },
+  { title: "JJB brand visual", category: "Branding", media: { kind: "image", src: "https://designworkgroup.in/wp-content/uploads/2025/10/jjb-d.webp", alt: "JJB brand visual" } },
+  { title: "JJB brand visual", category: "Branding", media: { kind: "image", src: "https://designworkgroup.in/wp-content/uploads/2025/10/jjb-c.webp", alt: "JJB brand visual" } },
+  { title: "Brick Café — behind the scenes", category: "Experiential", media: { kind: "instagram", permalink: "https://www.instagram.com/reel/DCO86R-pcqX/" } },
+  { title: "Brick Café — finalised", category: "Experiential", media: { kind: "instagram", permalink: "https://www.instagram.com/reel/DR4u5NLDF8m/" } },
+  { title: "International project documentation", category: "Behind the scenes", media: { kind: "instagram", permalink: "https://www.instagram.com/reel/C6um0ROIc9d/" } },
+  { title: "Dwell Baby Air banner", category: "Dwell", media: { kind: "image", src: "https://www.dwellventilation.com/web/image/product.image/231/image_1920/baby%20air%20banner.webp", alt: "Dwell Baby Air banner" } },
+  { title: "Sophie Choudry collaboration", category: "Dwell", media: { kind: "instagram", permalink: "https://www.instagram.com/p/DZZxCLVCSyH/" } },
 ];
 
 export const beyondWork = [
@@ -233,10 +347,22 @@ export const beyondWork = [
   "Still tend a small bonsai collection — turns out patience scales",
 ];
 
-export const aiCreativesConfig = {
-  instagramUrl: "" as string,
-  items: [] as { type: "image" | "video"; src: string; alt: string }[],
-};
+// ─── AI CREATIVES ───────────────────────────────────────────────
+// Instagram reels can't autoplay/loop as raw <video> tiles (Instagram
+// doesn't expose direct file URLs). Each tile shows a static cover and
+// opens the full official embed in the lightbox on click. Real cover
+// thumbnails should replace the gradient placeholder once available —
+// the click-through to the real embed already works either way.
+export const aiCreatives: { permalink: string; caption: string }[] = [
+  { permalink: "https://www.instagram.com/reel/DXrD_YqiRK1/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/reel/DXoTgEhCVzn/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/reel/DXg9ClwCeLX/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/reel/DXg5_pkiXKJ/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/reel/DSz4gFukmql/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/reel/DVLmPLeCRcC/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/reel/DWXs9uChwJt/", caption: "AI-generated — Baby Air launch" },
+  { permalink: "https://www.instagram.com/p/DZRn0Yhpl-v/", caption: "AI content strip" },
+];
 
 export const contact = {
   email: "tpavan5399@gmail.com",
